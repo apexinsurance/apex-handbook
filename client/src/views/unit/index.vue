@@ -7,7 +7,7 @@
     />
     <handbook-table
       :tableColumn="tableColumn"
-      :tableData="banks"
+      :tableData="currencies"
       :loading="loading"
       @handle-delete="handleDelete"
       @handle-edit="handleEdit"
@@ -31,9 +31,9 @@ import TableHeader from '@/components/TableHeader/index.vue'
 import HandbookTable from '@/components/HandbookTable/index.vue'
 import { IHandbookColumn } from '@/utils/types'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { BankModule } from '@/store/modules/bank'
+import { UnitModule } from '@/store/modules/unit'
 export default defineComponent({
-  name: 'City',
+  name: 'Unit',
   components: { PageHeader, TableHeader, HandbookTable },
   data() {
     return {
@@ -44,44 +44,32 @@ export default defineComponent({
         {
           prop: 'fullName',
           label: 'Name',
-          width: '240',
+          width: '280',
         },
         {
           prop: 'shortName',
           label: 'ShortName',
-          width: '200',
+          width: '220',
         },
         {
-          prop: 'mfo',
-          label: 'MFO',
-        },
-        {
-          prop: 'ncea',
-          label: 'NCEA',
-        },
-        {
-          prop: 'tin',
-          label: 'TIN',
-        },
-        {
-          prop: 'countryISOCode',
-          label: 'Country Code',
+          prop: 'code',
+          label: 'Code',
         },
       ] as Array<IHandbookColumn>,
     }
   },
   mounted() {
     this.updateQuery()
-    BankModule.getAllBanks(this.query)
+    UnitModule.getAllUnits(this.query)
   },
   methods: {
     handleAddClick() {
-      this.$router.push('/bank/create')
+      this.$router.push('/unit/create')
     },
     handleLanguageClick(payload: string) {
       this.currentLang = payload
       this.setQuery({ lang: payload })
-      BankModule.getAllBanks(this.query)
+      UnitModule.getAllUnits(this.query)
     },
     handleDelete(id: number) {
       ElMessageBox.confirm('Вы хотите удалить этот данные?', 'Предупреждение', {
@@ -90,8 +78,8 @@ export default defineComponent({
         type: 'warning',
       })
         .then(async () => {
-          await BankModule.deleteBank(id)
-          BankModule.getAllBanks(this.query)
+          await UnitModule.deleteUnit(id)
+          UnitModule.getAllUnits(this.query)
           ElMessage({
             type: 'success',
             message: 'Удалить завершено',
@@ -100,12 +88,12 @@ export default defineComponent({
         .catch(() => {})
     },
     handleEdit(id: number) {
-      this.$router.push(`/bank/edit/${id}`)
+      this.$router.push(`/unit/edit/${id}`)
     },
     async onPaginationChange(value: number) {
       this.currentPage = value
       this.setQuery({ page: value.toString() })
-      BankModule.getAllBanks(this.query)
+      UnitModule.getAllUnits(this.query)
     },
     setQuery(payload: Record<string, string>) {
       this.$router.replace({ query: { ...this.$route.query, ...payload } })
@@ -118,18 +106,17 @@ export default defineComponent({
     },
   },
   computed: {
-    banks() {
-      console.log('BankModule.banks', BankModule.banks)
-      return BankModule.banks
+    currencies() {
+      return UnitModule.units
     },
     total() {
-      return BankModule.total
+      return UnitModule.total
     },
     query(): string {
       return `?lang=${this.currentLang}&page=${this.currentPage}&limit=${this.limit}`
     },
     loading(): boolean {
-      return BankModule.loading
+      return UnitModule.loading
     },
   },
 })

@@ -2,7 +2,15 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Default from '@/layouts/default.vue'
 import { shallowRef } from 'vue'
 
-import { countryRoute, regionRoute, districtRoute, cityRoute } from './modules'
+import {
+  countryRoute,
+  regionRoute,
+  districtRoute,
+  cityRoute,
+  currencyRateRoute,
+  unitRoute,
+  bcvRoute,
+} from './modules'
 import { bankRoute } from './modules/bank'
 import { currencyRoute } from './modules/currency'
 
@@ -46,6 +54,9 @@ export const asyncRoutes: RouteRecordRaw[] = [
   cityRoute,
   bankRoute,
   currencyRoute,
+  currencyRateRoute,
+  unitRoute,
+  bcvRoute,
 ]
 
 const router = createRouter({

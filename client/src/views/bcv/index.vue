@@ -2,12 +2,12 @@
   <div>
     <table-header
       :currentLang="currentLang"
+      :languageFilter="false"
       @add-click="handleAddClick"
-      @language-click="handleLanguageClick"
     />
     <handbook-table
       :tableColumn="tableColumn"
-      :tableData="banks"
+      :tableData="bcv"
       :loading="loading"
       @handle-delete="handleDelete"
       @handle-edit="handleEdit"
@@ -26,62 +26,39 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue'
-import PageHeader from '@/components/PageHeader/index.vue'
 import TableHeader from '@/components/TableHeader/index.vue'
 import HandbookTable from '@/components/HandbookTable/index.vue'
 import { IHandbookColumn } from '@/utils/types'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { BankModule } from '@/store/modules/bank'
+import { BcvModule } from '@/store/modules/bcv'
+import { dateFormatter } from '@/utils/methods'
 export default defineComponent({
-  name: 'City',
-  components: { PageHeader, TableHeader, HandbookTable },
+  name: 'Bcv',
+  components: { TableHeader, HandbookTable },
   data() {
     return {
-      currentLang: 'ru' as any,
       currentPage: 1 as any,
       limit: 30,
       tableColumn: [
         {
-          prop: 'fullName',
-          label: 'Name',
-          width: '240',
-        },
-        {
-          prop: 'shortName',
-          label: 'ShortName',
+          prop: 'date',
+          label: 'Date',
           width: '200',
         },
         {
-          prop: 'mfo',
-          label: 'MFO',
-        },
-        {
-          prop: 'ncea',
-          label: 'NCEA',
-        },
-        {
-          prop: 'tin',
-          label: 'TIN',
-        },
-        {
-          prop: 'countryISOCode',
-          label: 'Country Code',
+          prop: 'value',
+          label: 'Value',
         },
       ] as Array<IHandbookColumn>,
     }
   },
   mounted() {
     this.updateQuery()
-    BankModule.getAllBanks(this.query)
+    BcvModule.getAllBcv(this.query)
   },
   methods: {
     handleAddClick() {
-      this.$router.push('/bank/create')
-    },
-    handleLanguageClick(payload: string) {
-      this.currentLang = payload
-      this.setQuery({ lang: payload })
-      BankModule.getAllBanks(this.query)
+      this.$router.push('/bcv/create')
     },
     handleDelete(id: number) {
       ElMessageBox.confirm('Вы хотите удалить этот данные?', 'Предупреждение', {
@@ -90,8 +67,8 @@ export default defineComponent({
         type: 'warning',
       })
         .then(async () => {
-          await BankModule.deleteBank(id)
-          BankModule.getAllBanks(this.query)
+          await BcvModule.deleteBcv(id)
+          BcvModule.getAllBcv(this.query)
           ElMessage({
             type: 'success',
             message: 'Удалить завершено',
@@ -100,36 +77,39 @@ export default defineComponent({
         .catch(() => {})
     },
     handleEdit(id: number) {
-      this.$router.push(`/bank/edit/${id}`)
+      this.$router.push(`/bcv/edit/${id}`)
     },
     async onPaginationChange(value: number) {
       this.currentPage = value
       this.setQuery({ page: value.toString() })
-      BankModule.getAllBanks(this.query)
+      BcvModule.getAllBcv(this.query)
     },
     setQuery(payload: Record<string, string>) {
       this.$router.replace({ query: { ...this.$route.query, ...payload } })
     },
 
     updateQuery() {
-      const { page, lang } = this.$route.query
+      const { page } = this.$route.query
       if (page) this.currentPage = +page
-      if (page) this.currentLang = lang
     },
   },
   computed: {
-    banks() {
-      console.log('BankModule.banks', BankModule.banks)
-      return BankModule.banks
+    bcv() {
+      console.log('BcvModule.bcv', BcvModule.bcv)
+
+      return BcvModule.bcv.map((item) => ({
+        ...item,
+        date: dateFormatter(item.date),
+      }))
     },
     total() {
-      return BankModule.total
+      return BcvModule.total
     },
     query(): string {
-      return `?lang=${this.currentLang}&page=${this.currentPage}&limit=${this.limit}`
+      return `?page=${this.currentPage}&limit=${this.limit}`
     },
     loading(): boolean {
-      return BankModule.loading
+      return BcvModule.loading
     },
   },
 })

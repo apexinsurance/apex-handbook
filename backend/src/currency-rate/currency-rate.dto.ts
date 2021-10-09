@@ -11,7 +11,7 @@ export class CreateCurrencyRateDto extends BaseDto {
   @IsDate()
   date: Date
 
-  @IsDecimal()
+  @IsNumber()
   rate: number
 
   @IsNumber()
@@ -28,7 +28,7 @@ export class UpdateCurrencyRateDto extends BaseDto {
   date: Date
 
   @IsOptional()
-  @IsDecimal()
+  @IsNumber()
   rate: number
 
   @IsOptional()

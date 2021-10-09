@@ -9,8 +9,8 @@
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
     <div class="right-menu flex items-center">
       <template v-if="!isMobile">
-        <search id="header-search" class="right-menu-item" />
-        <el-divider direction="vertical" class="mx-3" />
+        <!-- <search id="header-search" class="right-menu-item" /> -->
+        <!-- <el-divider direction="vertical" class="mx-3" /> -->
         <fullscreen id="screenfull" class="right-menu-item hover-effect" />
         <el-divider direction="vertical" class="mx-3" />
 
@@ -58,105 +58,105 @@
   </div>
 </template>
 <script lang="ts">
-  import { AppModule, DeviceType } from '../../../store/modules/app'
-  import { UserModule } from '../../../store/modules/user'
-  import Breadcrumb from '../../../components/Breadcrumb/index.vue'
-  import Hamburger from '../../../components/Hamburger/index.vue'
-  import Search from '../../../components/HeaderSearch/index.vue'
-  import Fullscreen from '../../../components/Fullscreen/index.vue'
-  import { defineComponent } from 'vue'
+import { AppModule, DeviceType } from '../../../store/modules/app'
+import { UserModule } from '../../../store/modules/user'
+import Breadcrumb from '../../../components/Breadcrumb/index.vue'
+import Hamburger from '../../../components/Hamburger/index.vue'
+import Search from '../../../components/HeaderSearch/index.vue'
+import Fullscreen from '../../../components/Fullscreen/index.vue'
+import { defineComponent } from 'vue'
 
-  export default defineComponent({
-    components: { Breadcrumb, Hamburger, Search, Fullscreen },
-    data() {
-      return {
-        search: '',
-        language: 'ru',
+export default defineComponent({
+  components: { Breadcrumb, Hamburger, Search, Fullscreen },
+  data() {
+    return {
+      search: '',
+      language: 'ru',
+    }
+  },
+  props: {
+    isMobile: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  computed: {
+    sidebar() {
+      return AppModule.sidebar
+    },
+
+    device() {
+      return AppModule.device.toString()
+    },
+
+    // isMobile() {
+    //   return AppModule.device === DeviceType.Mobile
+    // },
+
+    avatar() {
+      return UserModule.avatar
+    },
+  },
+  methods: {
+    toggleSideBar() {
+      AppModule.ToggleSideBar(false)
+    },
+    async handleCommand(command: any) {
+      if (command === 'logout') {
+        await UserModule.LogOut()
+        this.$router.push('/login')
       }
     },
-    props: {
-      isMobile: {
-        type: Boolean,
-        default: false,
-      },
+    handleCommandLanguage(command: 'uz' | 'ru' | 'en') {
+      this.language = command
     },
-    computed: {
-      sidebar() {
-        return AppModule.sidebar
-      },
-
-      device() {
-        return AppModule.device.toString()
-      },
-
-      // isMobile() {
-      //   return AppModule.device === DeviceType.Mobile
-      // },
-
-      avatar() {
-        return UserModule.avatar
-      },
-    },
-    methods: {
-      toggleSideBar() {
-        AppModule.ToggleSideBar(false)
-      },
-      async handleCommand(command: any) {
-        if (command === 'logout') {
-          await UserModule.LogOut()
-          this.$router.push('/login')
-        }
-      },
-      handleCommandLanguage(command: 'uz' | 'ru' | 'en') {
-        this.language = command
-      },
-    },
-  })
+  },
+})
 </script>
 
 <style lang="scss" scoped>
-  .navbar {
-    height: 50px;
-    overflow: hidden;
-    position: relative;
-    background: #fff;
-    box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+.navbar {
+  height: 50px;
+  overflow: hidden;
+  position: relative;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 
-    .hamburger-container {
-      /* line-height: 46px; */
-      height: 100%;
-      float: left;
-      padding: 0 15px;
-      cursor: pointer;
-      /* transition: background 0.3s; */
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      -webkit-tap-highlight-color: transparent;
+  .hamburger-container {
+    /* line-height: 46px; */
+    height: 100%;
+    float: left;
+    padding: 0 15px;
+    cursor: pointer;
+    /* transition: background 0.3s; */
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
 
-      &:hover {
-        background: rgba(0, 0, 0, 0.025);
-      }
-    }
-
-    .breadcrumb-container {
-      float: left;
-    }
-
-    .right-menu {
-      float: right;
-      height: 50px;
-      display: flex;
-      justify-content: center;
-      color: #043953;
-      .items {
-        display: flex;
-        align-items: center;
-      }
-      .el-dropdown-link {
-        white-space: nowrap;
-      }
+    &:hover {
+      background: rgba(0, 0, 0, 0.025);
     }
   }
+
+  .breadcrumb-container {
+    float: left;
+  }
+
+  .right-menu {
+    float: right;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    color: #043953;
+    .items {
+      display: flex;
+      align-items: center;
+    }
+    .el-dropdown-link {
+      white-space: nowrap;
+    }
+  }
+}
 </style>

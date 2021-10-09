@@ -4,7 +4,7 @@
       <el-button type="primary" size="small" @click="onAddClick">
         Добавить <i class="el-icon-plus" />
       </el-button>
-      <div class="flex items-center">
+      <div class="flex items-center" v-if="languageFilter">
         <el-button
           v-for="key in Object.keys(languages)"
           :key="key"
@@ -37,6 +37,10 @@ export default defineComponent({
     currentLang: {
       type: String,
       default: 'ru',
+    },
+    languageFilter: {
+      type: Boolean,
+      default: true,
     },
   },
   emits: {

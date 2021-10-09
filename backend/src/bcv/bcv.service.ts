@@ -17,6 +17,7 @@ export class BcvService {
     const { page, limit } = dto
     const bcvs = await this.bcvRepository
       .createQueryBuilder('bcv')
+      .select(['bcv.id as id', 'bcv.value as value', 'bcv.date as date'])
       .limit(limit)
       .offset((page - 1) * limit)
       .getRawMany()

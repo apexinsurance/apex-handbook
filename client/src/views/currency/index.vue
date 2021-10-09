@@ -7,7 +7,7 @@
     />
     <handbook-table
       :tableColumn="tableColumn"
-      :tableData="currensies"
+      :tableData="currencies"
       :loading="loading"
       @handle-delete="handleDelete"
       @handle-edit="handleEdit"
@@ -114,8 +114,8 @@ export default defineComponent({
     },
   },
   computed: {
-    currensies() {
-      return CurrencyModule.currensies
+    currencies() {
+      return CurrencyModule.currencies
     },
     total() {
       return CurrencyModule.total

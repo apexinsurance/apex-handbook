@@ -37,7 +37,7 @@ export class UnitService {
       .createQueryBuilder('unit')
       .leftJoin('unit.translations', 'translations')
       .leftJoin('translations.language', 'language')
-      .select(['unit.id as id', 'city.code as code'])
+      .select(['unit.id as id', 'unit.code as code'])
       .addSelect('translations.shortName', 'shortName')
       .addSelect('translations.fullName', 'fullName')
       .where('language.title = :lang', { lang })

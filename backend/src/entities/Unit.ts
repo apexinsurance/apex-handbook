@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm'
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  DeleteDateColumn,
+} from 'typeorm'
 import { UnitTranslation } from './UnitTranslation'
 
 @Entity()
@@ -14,13 +20,18 @@ export class Unit {
 
   @Column({
     type: 'timestamp with time zone',
+    default: new Date(),
   })
   startDate: Date
 
   @Column({
     type: 'timestamp with time zone',
+    default: null,
   })
   finishDate: Date
+
+  @DeleteDateColumn({ type: 'timestamp with time zone', default: null })
+  deletedDate: Date
 
   @OneToMany(
     () => {

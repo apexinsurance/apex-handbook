@@ -2,12 +2,12 @@
   <div>
     <table-header
       :currentLang="currentLang"
+      :languageFilter="false"
       @add-click="handleAddClick"
-      @language-click="handleLanguageClick"
     />
     <handbook-table
       :tableColumn="tableColumn"
-      :tableData="banks"
+      :tableData="currencyRates"
       :loading="loading"
       @handle-delete="handleDelete"
       @handle-edit="handleEdit"
@@ -26,15 +26,15 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue'
-import PageHeader from '@/components/PageHeader/index.vue'
 import TableHeader from '@/components/TableHeader/index.vue'
 import HandbookTable from '@/components/HandbookTable/index.vue'
 import { IHandbookColumn } from '@/utils/types'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { BankModule } from '@/store/modules/bank'
+import { CurrencyRateModule } from '@/store/modules/currency-rate'
+import { dateFormatter } from '@/utils/methods'
 export default defineComponent({
-  name: 'City',
-  components: { PageHeader, TableHeader, HandbookTable },
+  name: 'CurrencyRate',
+  components: { TableHeader, HandbookTable },
   data() {
     return {
       currentLang: 'ru' as any,
@@ -42,46 +42,35 @@ export default defineComponent({
       limit: 30,
       tableColumn: [
         {
-          prop: 'fullName',
-          label: 'Name',
-          width: '240',
-        },
-        {
-          prop: 'shortName',
-          label: 'ShortName',
+          prop: 'date',
+          label: 'Date',
           width: '200',
         },
         {
-          prop: 'mfo',
-          label: 'MFO',
+          prop: 'count',
+          label: 'Count',
+          width: '220',
         },
         {
-          prop: 'ncea',
-          label: 'NCEA',
+          prop: 'rate',
+          label: 'Rate',
+          width: '200',
         },
         {
-          prop: 'tin',
-          label: 'TIN',
-        },
-        {
-          prop: 'countryISOCode',
-          label: 'Country Code',
+          prop: 'currencyCode',
+          label: 'Currency Code',
+          width: '220',
         },
       ] as Array<IHandbookColumn>,
     }
   },
   mounted() {
     this.updateQuery()
-    BankModule.getAllBanks(this.query)
+    CurrencyRateModule.getAllCurrencies(this.query)
   },
   methods: {
     handleAddClick() {
-      this.$router.push('/bank/create')
-    },
-    handleLanguageClick(payload: string) {
-      this.currentLang = payload
-      this.setQuery({ lang: payload })
-      BankModule.getAllBanks(this.query)
+      this.$router.push('/currency-rate/create')
     },
     handleDelete(id: number) {
       ElMessageBox.confirm('Вы хотите удалить этот данные?', 'Предупреждение', {
@@ -90,8 +79,8 @@ export default defineComponent({
         type: 'warning',
       })
         .then(async () => {
-          await BankModule.deleteBank(id)
-          BankModule.getAllBanks(this.query)
+          await CurrencyRateModule.deleteCurrencyRate(id)
+          CurrencyRateModule.getAllCurrencies(this.query)
           ElMessage({
             type: 'success',
             message: 'Удалить завершено',
@@ -100,12 +89,12 @@ export default defineComponent({
         .catch(() => {})
     },
     handleEdit(id: number) {
-      this.$router.push(`/bank/edit/${id}`)
+      this.$router.push(`/currency-rate/edit/${id}`)
     },
     async onPaginationChange(value: number) {
       this.currentPage = value
       this.setQuery({ page: value.toString() })
-      BankModule.getAllBanks(this.query)
+      CurrencyRateModule.getAllCurrencies(this.query)
     },
     setQuery(payload: Record<string, string>) {
       this.$router.replace({ query: { ...this.$route.query, ...payload } })
@@ -118,18 +107,20 @@ export default defineComponent({
     },
   },
   computed: {
-    banks() {
-      console.log('BankModule.banks', BankModule.banks)
-      return BankModule.banks
+    currencyRates() {
+      return CurrencyRateModule.currencyRates.map((item) => ({
+        ...item,
+        date: dateFormatter(item.date),
+      }))
     },
     total() {
-      return BankModule.total
+      return CurrencyRateModule.total
     },
     query(): string {
       return `?lang=${this.currentLang}&page=${this.currentPage}&limit=${this.limit}`
     },
     loading(): boolean {
-      return BankModule.loading
+      return CurrencyRateModule.loading
     },
   },
 })

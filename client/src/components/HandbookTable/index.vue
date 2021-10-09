@@ -13,7 +13,6 @@
         header-align="center"
         align="center"
         :label="c.label"
-        :width="c.width || 180"
         show-overflow-tooltip
       />
       <el-table-column

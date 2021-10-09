@@ -15,7 +15,7 @@ import $axios from '@/utils/api'
 import { AxiosResponse } from '@/utils/types'
 
 export interface ICurrencyState {
-  currensies: ICurrency[]
+  currencies: ICurrency[]
   total: number
   currentCurrency: ICurrency | null
   loading: boolean
@@ -23,7 +23,7 @@ export interface ICurrencyState {
 
 @Module({ dynamic: true, namespaced: true, store, name: 'currency' })
 class Currency extends VuexModule implements ICurrencyState {
-  public currensies: ICurrency[] = []
+  public currencies: ICurrency[] = []
   public currentCurrency: ICurrency | null = null
   public loading = false
   public total = 0
@@ -39,8 +39,8 @@ class Currency extends VuexModule implements ICurrencyState {
   }
 
   @Mutation
-  private SET_CURRENCIES(currensies: ICurrency[]) {
-    this.currensies = currensies
+  private SET_CURRENCIES(currencies: ICurrency[]) {
+    this.currencies = currencies
   }
 
   @Mutation

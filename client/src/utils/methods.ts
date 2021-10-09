@@ -1,3 +1,5 @@
+import moment from 'moment'
+moment.locale('ru')
 export const generateFormRules = (array: string[]) => {
   const rules = {} as Record<string, unknown>
   array.forEach((item) => {
@@ -10,4 +12,8 @@ export const generateFormRules = (array: string[]) => {
     ]
   })
   return rules
+}
+
+export const dateFormatter = (date: Date) => {
+  return moment(date).format('LL')
 }

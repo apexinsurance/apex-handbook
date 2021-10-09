@@ -2,6 +2,7 @@ import {
   IsArray,
   IsDate,
   IsDecimal,
+  IsNumber,
   IsOptional,
   IsPositive,
 } from 'class-validator'
@@ -12,7 +13,7 @@ export class CreateBcvDto {
   @IsDate()
   date: Date
 
-  @IsDecimal()
+  @IsNumber()
   @IsPositive()
   value: number
 }
@@ -23,7 +24,7 @@ export class UpdateBcvDto extends BaseDto {
   date: Date
 
   @IsOptional()
-  @IsPositive()
+  @IsNumber()
   @IsDecimal()
   rate: number
 }

@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm'
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  DeleteDateColumn,
+} from 'typeorm'
 import { Currency } from './Currency'
 
 @Entity()
@@ -21,6 +27,9 @@ export class CurrencyRate {
 
   @Column('int')
   count: number
+
+  @DeleteDateColumn({ type: 'timestamp with time zone', default: null })
+  deletedDate: Date
 
   @ManyToOne(
     () => {

@@ -26,6 +26,12 @@ export class CurrencyRateService {
     const currencyRate = await this.currencyRateRepository
       .createQueryBuilder('currencyRate')
       .leftJoin('currencyRate.currency', 'currency')
+      .select([
+        'currencyRate.id as id',
+        'currencyRate.rate as rate',
+        'currencyRate.date as date',
+        'currencyRate.count as count',
+      ])
       .addSelect('currency.code', 'currencyCode')
       .limit(limit)
       .offset((page - 1) * limit)

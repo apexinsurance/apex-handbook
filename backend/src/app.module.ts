@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { BankModule } from './bank/bank.module'
+import { BcvModule } from './bcv/bcv.module'
 import { CityModule } from './city/city.module'
 import { getTypeOrmConfig } from './config/typeorm.config'
 import { CountryModule } from './country/country.module'
@@ -29,6 +30,7 @@ import { UnitModule } from './unit/unit.module'
     CurrencyModule,
     CurrencyRateModule,
     UnitModule,
+    BcvModule,
   ],
 })
 export class AppModule {}
