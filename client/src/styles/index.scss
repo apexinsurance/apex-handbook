@@ -1,0 +1,214 @@
+@import './variables.scss';
+@import './mixins.scss';
+@import './transition.scss';
+@import './svgicon.scss';
+// @import "./ag-grid.scss";
+@import './tailwind.css';
+/* Global scss */
+
+#confirmAttorney,
+#attorneyPrint,
+#dealDocument,
+#showLogo {
+  display: none;
+}
+body {
+  height: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica Neue,
+    Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+}
+
+html {
+  height: 100%;
+}
+
+#app {
+  height: 100%;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+a,
+a:focus,
+a:hover {
+  color: inherit;
+  outline: none;
+  text-decoration: none;
+}
+.el-loading-spinner .circular {
+  margin: 0 auto !important;
+}
+div:focus {
+  outline: none;
+}
+
+.clearfix {
+  @include clearfix;
+}
+
+.app-container {
+  padding: 20px;
+}
+.el-submenu__title,
+.submenu-title-noDropdown {
+  padding-left: 12px !important;
+}
+.nest-menu .navbar-menu-item {
+  padding-left: 25px !important;
+}
+.el-menu-item,
+.el-submenu__title {
+  height: 50px;
+  line-height: 50px;
+}
+.el-form--label-top .el-form-item__label {
+  padding: 0 !important;
+}
+
+.el-collapse-item__header {
+  padding: 5px 10px;
+  color: #fff;
+  background: $menuBg;
+}
+.el-collapse-item__content {
+  padding-bottom: 0px;
+}
+.el-table__expanded-cell {
+  padding: 10px 50px;
+  font-size: 16px;
+}
+
+.app-wrapper {
+  /* @include clearfix; */
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.drawer-bg {
+  background: #000;
+  opacity: 0.3;
+  width: 100%;
+  top: 0;
+  height: 100%;
+  position: absolute;
+  z-index: 999;
+}
+
+.main-container {
+  min-height: 100%;
+  transition: margin-left 0.28s;
+  margin-left: $sideBarWidth;
+  position: relative;
+}
+
+.sidebar-container {
+  transition: width 0.28s;
+  width: $sideBarWidth !important;
+  height: 100%;
+  position: fixed;
+  font-size: 0px;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1001;
+  overflow: hidden;
+}
+
+.hideSidebar {
+  .main-container {
+    margin-left: 0px;
+  }
+  .sidebar-container {
+    width: 0px !important;
+  }
+}
+
+/* for mobile response 适配移动端 */
+.mobile {
+  .main-container {
+    margin-left: 0px;
+  }
+
+  .sidebar-container {
+    transition: transform 0.28s;
+    width: $sideBarWidth !important;
+  }
+
+  &.openSidebar {
+    position: fixed;
+    top: 0;
+  }
+
+  &.hideSidebar {
+    .sidebar-container {
+      pointer-events: none;
+      transition-duration: 0.3s;
+      transform: translate3d(-$sideBarWidth, 0, 0);
+    }
+  }
+}
+.withoutAnimation {
+  .main-container,
+  .sidebar-container {
+    transition: none;
+  }
+}
+
+.el-submenu.is-active > .el-submenu__title {
+  color: $subMenuActiveText !important;
+}
+
+.full-mode {
+  .nest-menu .el-submenu > .el-submenu__title,
+  .el-submenu .el-menu-item {
+    min-width: $sideBarWidth !important;
+    background-color: $subMenuBg !important;
+
+    &:hover {
+      background-color: $subMenuHover !important;
+    }
+  }
+}
+
+.simple-mode {
+  &.first-level {
+    .submenu-title-noDropdown {
+      padding: 0 !important;
+      position: relative;
+
+      .el-tooltip {
+        padding: 0 !important;
+      }
+    }
+
+    .el-submenu {
+      overflow: hidden;
+
+      & > .el-submenu__title {
+        padding: 0px !important;
+
+        .el-submenu__icon-arrow {
+          display: none;
+        }
+
+        & > span {
+          visibility: hidden;
+        }
+      }
+    }
+  }
+}
+
+.handbook-form .el-form-item__label {
+  line-height: 20px !important;
+}
+.handbook-form .el-form-item .el-form-item {
+  margin-bottom: 22px !important;
+}
