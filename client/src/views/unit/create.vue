@@ -96,10 +96,8 @@
 import { defineComponent } from 'vue'
 import PageHeader from '@/components/PageHeader/index.vue'
 import { generateFormRules } from '@/utils/methods'
-import { ITranslatioForm } from '@/utils/types'
+import { ITranslationForm } from '@/utils/types'
 import { ElMessage } from 'element-plus'
-import { CountryModule } from '@/store/modules/country'
-import { CurrencyModule } from '@/store/modules/currency'
 import { ICreateUnitForm } from '@/store/modules/unit/unit.types'
 import { UnitModule } from '@/store/modules/unit'
 export default defineComponent({
@@ -147,7 +145,7 @@ export default defineComponent({
       ;(this.$refs[formName] as any).validate(async (valid: boolean) => {
         if (valid) {
           const { code, ru, uz, en } = this.unitForm
-          const translations = [ru, uz, en] as ITranslatioForm[]
+          const translations = [ru, uz, en] as ITranslationForm[]
           const formData: ICreateUnitForm = {
             code,
             translations,

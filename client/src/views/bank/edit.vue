@@ -39,6 +39,14 @@
           <el-form-item label="Устаревший">
             <el-switch v-model="bankForm.outdated" />
           </el-form-item>
+          <el-form-item label="Язык по умолчанию" prop="isDefault">
+            <el-radio-group v-model="bankForm.isDefault">
+              <el-radio label="uz">O'zbek</el-radio>
+              <el-radio label="ru">Русский</el-radio>
+              <el-radio label="en">English</el-radio>
+            </el-radio-group>
+          </el-form-item>
+
           <el-form-item>
             <el-tabs v-model="activeTab">
               <el-tab-pane label="O'zbek" name="uz">
@@ -122,7 +130,7 @@
 import { defineComponent } from 'vue'
 import PageHeader from '@/components/PageHeader/index.vue'
 import { generateFormRules } from '@/utils/methods'
-import { ITranslatioForm } from '@/utils/types'
+import { ITranslationForm } from '@/utils/types'
 import { ElMessage } from 'element-plus'
 import { CountryModule } from '@/store/modules/country'
 import { IUpdateBankForm } from '@/store/modules/bank/bank.types'
@@ -141,6 +149,7 @@ export default defineComponent({
         NCEA: '',
         TIN: '',
         countryId: null as any,
+        isDefault: 'uz',
         uz: {
           id: -1,
           title: 'uz',
@@ -159,7 +168,7 @@ export default defineComponent({
           shortName: '',
           fullName: '',
         },
-      },
+      } as Record<string, any>,
       rules: {
         ...generateFormRules([
           'MFO',
@@ -202,6 +211,7 @@ export default defineComponent({
             shortName: uz.shortName,
             fullName: uz.fullName,
           }
+          if (uz.isDefault) this.bankForm.isDefault = 'uz'
         }
         if (ru) {
           this.bankForm.ru = {
@@ -210,6 +220,7 @@ export default defineComponent({
             shortName: ru.shortName,
             fullName: ru.fullName,
           }
+          if (ru.isDefault) this.bankForm.isDefault = 'ru'
         }
         if (en) {
           this.bankForm.en = {
@@ -218,6 +229,7 @@ export default defineComponent({
             shortName: en.shortName,
             fullName: en.fullName,
           }
+          if (en.isDefault) this.bankForm.isDefault = 'en'
         }
       }
     } catch (error) {}
@@ -226,16 +238,25 @@ export default defineComponent({
     submitForm(formName: string) {
       ;(this.$refs[formName] as any).validate(async (valid: boolean) => {
         if (valid) {
-          const { id, outdated, countryId, ru, uz, en, ...otherData } =
-            this.bankForm
-          const translations = [ru, uz, en] as ITranslatioForm[]
-          const formData: IUpdateBankForm = {
+          const {
+            id,
+            outdated,
+            countryId,
+            isDefault,
+            ru,
+            uz,
+            en,
+            ...otherData
+          } = this.bankForm
+          this.bankForm[isDefault].isDefault = true
+          const translations = [ru, uz, en] as ITranslationForm[]
+          const formData = {
             id,
             translations,
             countryId,
             finishDate: outdated ? new Date() : null,
             ...otherData,
-          }
+          } as IUpdateBankForm
 
           await BankModule.updateBank(formData)
           ElMessage({

@@ -1,4 +1,4 @@
-import { ITranslatioForm, IBaseHandbook } from '@/utils/types'
+import { ITranslationForm, IBaseHandbook } from '@/utils/types'
 
 export interface IDistrict extends IBaseHandbook {
   id: number
@@ -9,7 +9,7 @@ export interface IDistrict extends IBaseHandbook {
 export interface ICreateDistrictForm {
   code: string
   regionId: number
-  translations: ITranslatioForm[]
+  translations: ITranslationForm[]
 }
 
 export interface IUpdateDistrictForm extends ICreateDistrictForm {

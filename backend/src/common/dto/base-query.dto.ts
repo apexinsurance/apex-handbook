@@ -6,7 +6,7 @@ export class BaseQueryDto {
   @IsOptional()
   @IsString()
   @IsIn(translationLanguages)
-  lang: string
+  lang = 'ru'
 
   @IsOptional()
   @IsPositive()

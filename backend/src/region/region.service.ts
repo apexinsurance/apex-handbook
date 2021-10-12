@@ -25,14 +25,7 @@ export class RegionService {
   ) {}
 
   async find(dto: BaseQueryDto) {
-    let { lang } = dto
-    const { page, limit } = dto
-
-    if (!lang) {
-      lang = await (
-        await this.languageRepository.findOne({ isDefault: true })
-      )?.title
-    }
+    const { lang, page, limit } = dto
 
     const countries = await this.regionRepository
       .createQueryBuilder('region')
@@ -59,8 +52,6 @@ export class RegionService {
   }
 
   async findForSelect(): Promise<Region[]> {
-    const lang = (await this.languageRepository.findOne({ isDefault: true }))
-      ?.title
     const regions = await this.regionRepository
       .createQueryBuilder('region')
       .leftJoin('region.translations', 'translations')
@@ -68,8 +59,9 @@ export class RegionService {
       .select('region.id as id')
       .addSelect('translations.shortName', 'shortName')
       .addSelect('translations.fullName', 'fullName')
-      .where('language.title = :lang', { lang })
+      .where('translations.isDefault = true')
       .getRawMany()
+
     return regions
   }
 
@@ -81,42 +73,34 @@ export class RegionService {
       .leftJoinAndSelect('translations.language', 'language')
       .where('region.id = :id', { id })
       .getOne()
-    if (!region) {
-      throw new NotFoundException(REGION_NOT_FOUND)
-    }
+    if (!region) throw new NotFoundException(REGION_NOT_FOUND)
+
     return region
   }
 
   async create(dto: CreateRegionDto) {
-    const { code, countryId, translations, ...optionalData } = dto
+    const { countryId, translations, ...regionData } = dto
     const country = await getRepository(Country).findOne(countryId)
-
-    if (!country) {
-      throw new NotFoundException(COUNTRY_NOT_FOUND)
-    }
+    if (!country) throw new NotFoundException(COUNTRY_NOT_FOUND)
 
     const regionTranslations = await Promise.all(
-      translations.map(async ({ title, shortName, fullName }) => {
+      translations.map(async ({ title, ...otherData }) => {
         const language = await this.languageRepository.findOne({
           title,
         })
+        if (!language) throw new NotFoundException(LANGUAGE_NOT_FOUND)
 
-        if (!language) {
-          throw new NotFoundException(LANGUAGE_NOT_FOUND)
-        }
         return this.regionTranslationRepository.create({
-          shortName,
-          fullName,
           language,
+          ...otherData,
         })
       }),
     )
 
     const newRegion = this.regionRepository.create({
-      code,
       translations: regionTranslations,
       country,
-      ...optionalData,
+      ...regionData,
     })
 
     return this.regionRepository.save(newRegion)
@@ -129,14 +113,10 @@ export class RegionService {
       id,
       ...regionData,
     })
-    if (!region) {
-      throw new NotFoundException(REGION_NOT_FOUND)
-    }
+    if (!region) throw new NotFoundException(REGION_NOT_FOUND)
 
     const country = await getRepository(Country).findOne(countryId)
-    if (!country) {
-      throw new NotFoundException(COUNTRY_NOT_FOUND)
-    }
+    if (!country) throw new NotFoundException(COUNTRY_NOT_FOUND)
 
     const regionTranslations = await Promise.all(
       translations.map(async (data) => {
@@ -144,9 +124,7 @@ export class RegionService {
           ...data,
         })
 
-        if (!translation) {
-          throw new NotFoundException(REGION_LANGUAGE_NOT_FOUND)
-        }
+        if (!translation) throw new NotFoundException(REGION_LANGUAGE_NOT_FOUND)
         return translation
       }),
     )
@@ -158,9 +136,8 @@ export class RegionService {
 
   async delete(id: number) {
     const country = await this.regionRepository.findOne(id)
-    if (!country) {
-      throw new NotFoundException(REGION_NOT_FOUND)
-    }
+    if (!country) throw new NotFoundException(REGION_NOT_FOUND)
+
     return this.regionRepository.softRemove(country)
   }
 }

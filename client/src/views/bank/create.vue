@@ -35,6 +35,13 @@
               />
             </el-select>
           </el-form-item>
+          <el-form-item label="Язык по умолчанию" prop="isDefault">
+            <el-radio-group v-model="bankForm.isDefault">
+              <el-radio label="uz">O'zbek</el-radio>
+              <el-radio label="ru">Русский</el-radio>
+              <el-radio label="en">English</el-radio>
+            </el-radio-group>
+          </el-form-item>
           <el-form-item>
             <el-tabs v-model="activeTab">
               <el-tab-pane label="O'zbek" name="uz">
@@ -118,7 +125,7 @@
 import { defineComponent } from 'vue'
 import PageHeader from '@/components/PageHeader/index.vue'
 import { generateFormRules } from '@/utils/methods'
-import { ITranslatioForm } from '@/utils/types'
+import { ITranslationForm } from '@/utils/types'
 import { ElMessage } from 'element-plus'
 import { CountryModule } from '@/store/modules/country'
 import { ICreateBankForm } from '@/store/modules/bank/bank.types'
@@ -134,6 +141,7 @@ export default defineComponent({
         NCEA: '',
         TIN: '',
         countryId: null as any,
+        isDefault: 'uz',
         uz: {
           id: -1,
           title: 'uz',
@@ -152,7 +160,7 @@ export default defineComponent({
           shortName: '',
           fullName: '',
         },
-      },
+      } as Record<string, any>,
       rules: {
         ...generateFormRules([
           'MFO',
@@ -180,12 +188,13 @@ export default defineComponent({
     submitForm(formName: string) {
       ;(this.$refs[formName] as any).validate(async (valid: boolean) => {
         if (valid) {
-          const { ru, uz, en, ...otherData } = this.bankForm
-          const translations = [ru, uz, en] as ITranslatioForm[]
-          const formData: ICreateBankForm = {
+          const { ru, uz, en, isDefault, ...otherData } = this.bankForm
+          this.bankForm[isDefault].isDefault = true
+          const translations = [ru, uz, en] as ITranslationForm[]
+          const formData = {
             translations,
             ...otherData,
-          }
+          } as ICreateBankForm
 
           await BankModule.createBank(formData)
           this.resetForm(formName)

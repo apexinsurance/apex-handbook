@@ -27,6 +27,13 @@
           <el-form-item label="Устаревший">
             <el-switch v-model="countryForm.outdated" />
           </el-form-item>
+          <el-form-item label="Язык по умолчанию" prop="isDefault">
+            <el-radio-group v-model="countryForm.isDefault">
+              <el-radio label="uz">O'zbek</el-radio>
+              <el-radio label="ru">Русский</el-radio>
+              <el-radio label="en">English</el-radio>
+            </el-radio-group>
+          </el-form-item>
           <el-form-item>
             <el-tabs v-model="activeTab">
               <el-tab-pane label="O'zbek" name="uz">
@@ -113,7 +120,7 @@ import { generateFormRules } from '@/utils/methods'
 import { IUpdateCountryForm } from '@/store/modules/country/country.types'
 import { CountryModule } from '@/store/modules/country'
 import { ElMessage } from 'element-plus'
-import { ITranslatioForm } from '@/utils/types'
+import { ITranslationForm } from '@/utils/types'
 export default defineComponent({
   name: 'EditCountry',
   components: { PageHeader },
@@ -125,6 +132,7 @@ export default defineComponent({
         outdated: false,
         code: '',
         ISOCode: '',
+        isDefault: 'uz',
         uz: {
           id: -1,
           title: 'uz',
@@ -143,7 +151,7 @@ export default defineComponent({
           shortName: '',
           fullName: '',
         },
-      },
+      } as Record<string, any>,
       rules: {
         ...generateFormRules([
           'code',
@@ -178,6 +186,7 @@ export default defineComponent({
             shortName: uz.shortName,
             fullName: uz.fullName,
           }
+          if (uz.isDefault) this.countryForm.isDefault = 'uz'
         }
         if (ru) {
           this.countryForm.ru = {
@@ -186,6 +195,7 @@ export default defineComponent({
             shortName: ru.shortName,
             fullName: ru.fullName,
           }
+          if (ru.isDefault) this.countryForm.isDefault = 'ru'
         }
         if (en) {
           this.countryForm.en = {
@@ -194,6 +204,7 @@ export default defineComponent({
             shortName: en.shortName,
             fullName: en.fullName,
           }
+          if (en.isDefault) this.countryForm.isDefault = 'en'
         }
       }
     } catch (error) {}
@@ -202,8 +213,10 @@ export default defineComponent({
     submitForm(formName: string) {
       ;(this.$refs[formName] as any).validate(async (valid: boolean) => {
         if (valid) {
-          const { id, code, ISOCode, outdated, ru, uz, en } = this.countryForm
-          const translations = [ru, uz, en] as ITranslatioForm[]
+          const { id, code, ISOCode, outdated, isDefault, ru, uz, en } =
+            this.countryForm
+          this.countryForm[isDefault].isDefault = true
+          const translations = [ru, uz, en] as ITranslationForm[]
 
           const formData: IUpdateCountryForm = {
             id,

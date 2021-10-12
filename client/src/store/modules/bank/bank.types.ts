@@ -1,4 +1,4 @@
-import { ITranslation, ITranslatioForm, IBaseHandbook } from '@/utils/types'
+import { ITranslation, ITranslationForm, IBaseHandbook } from '@/utils/types'
 
 export interface IBank extends IBaseHandbook {
   id: number
@@ -14,7 +14,7 @@ export interface ICreateBankForm {
   NCEA: string
   TIN: string
   countryId: number
-  translations: ITranslatioForm[]
+  translations: ITranslationForm[]
 }
 
 export interface IUpdateBankForm extends ICreateBankForm {

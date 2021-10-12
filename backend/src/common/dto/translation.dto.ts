@@ -1,4 +1,10 @@
-import { IsIn, IsNumber, IsString } from 'class-validator'
+import {
+  IsBoolean,
+  IsIn,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator'
 
 export const translationLanguages = ['uz', 'en', 'ru']
 
@@ -12,6 +18,10 @@ export class CreateTranslationDto {
 
   @IsString()
   fullName: string
+
+  @IsOptional()
+  @IsBoolean()
+  isDefault = false
 }
 
 export class UpdateTranslationDto extends CreateTranslationDto {

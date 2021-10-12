@@ -1,4 +1,4 @@
-import { ITranslatioForm, IBaseHandbook } from '@/utils/types'
+import { ITranslationForm, IBaseHandbook } from '@/utils/types'
 
 export interface IUnit extends IBaseHandbook {
   id: number
@@ -7,7 +7,7 @@ export interface IUnit extends IBaseHandbook {
 
 export interface ICreateUnitForm {
   code: string
-  translations: ITranslatioForm[]
+  translations: ITranslationForm[]
 }
 
 export interface IUpdateUnitForm extends ICreateUnitForm {

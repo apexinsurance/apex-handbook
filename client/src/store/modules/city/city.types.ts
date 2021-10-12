@@ -1,4 +1,4 @@
-import { ITranslatioForm, IBaseHandbook } from '@/utils/types'
+import { ITranslationForm, IBaseHandbook } from '@/utils/types'
 
 export interface ICity extends IBaseHandbook {
   id: number
@@ -9,7 +9,7 @@ export interface ICity extends IBaseHandbook {
 export interface ICreateCityForm {
   code: string
   regionId: number
-  translations: ITranslatioForm[]
+  translations: ITranslationForm[]
 }
 
 export interface IUpdateCityForm extends ICreateCityForm {

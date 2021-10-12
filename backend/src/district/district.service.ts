@@ -27,14 +27,7 @@ export class DistrictService {
   ) {}
 
   async find(dto: BaseQueryDto) {
-    let { lang } = dto
-    const { page, limit } = dto
-
-    if (!lang) {
-      lang = await (
-        await this.languageRepository.findOne({ isDefault: true })
-      )?.title
-    }
+    const { lang, page, limit } = dto
 
     const districts = await this.districtRepository
       .createQueryBuilder('district')
@@ -68,42 +61,35 @@ export class DistrictService {
       .leftJoinAndSelect('translations.language', 'language')
       .where('district.id = :id', { id })
       .getOne()
-    if (!district) {
-      throw new NotFoundException(DISTRICT_NOT_FOUND)
-    }
+    if (!district) throw new NotFoundException(DISTRICT_NOT_FOUND)
+
     return district
   }
 
   async create(dto: CreateDistrictDto) {
-    const { code, regionId, translations, ...optionalData } = dto
+    const { regionId, translations, ...districtData } = dto
     const region = await getRepository(Region).findOne(regionId)
 
-    if (!region) {
-      throw new NotFoundException(DISTRICT_NOT_FOUND)
-    }
+    if (!region) throw new NotFoundException(DISTRICT_NOT_FOUND)
 
     const districtTranslations = await Promise.all(
-      translations.map(async ({ title, shortName, fullName }) => {
+      translations.map(async ({ title, ...otherData }) => {
         const language = await this.languageRepository.findOne({
           title,
         })
+        if (!language) throw new NotFoundException(LANGUAGE_NOT_FOUND)
 
-        if (!language) {
-          throw new NotFoundException(LANGUAGE_NOT_FOUND)
-        }
         return this.districtTranslationRepository.create({
-          shortName,
-          fullName,
           language,
+          ...otherData,
         })
       }),
     )
 
     const newDistrict = this.districtRepository.create({
-      code,
       translations: districtTranslations,
       region,
-      ...optionalData,
+      ...districtData,
     })
 
     return this.districtRepository.save(newDistrict)
@@ -116,24 +102,19 @@ export class DistrictService {
       id,
       ...districtData,
     })
-    if (!district) {
-      throw new NotFoundException(REGION_NOT_FOUND)
-    }
+    if (!district) throw new NotFoundException(REGION_NOT_FOUND)
 
     const region = await getRepository(Region).findOne(regionId)
-    if (!region) {
-      throw new NotFoundException(COUNTRY_NOT_FOUND)
-    }
+    if (!region) throw new NotFoundException(COUNTRY_NOT_FOUND)
 
     const districtTranslations = await Promise.all(
       translations.map(async (data) => {
         const translation = await this.districtTranslationRepository.preload({
           ...data,
         })
-
-        if (!translation) {
+        if (!translation)
           throw new NotFoundException(DISTRICT_LANGUAGE_NOT_FOUND)
-        }
+
         return translation
       }),
     )
@@ -145,9 +126,8 @@ export class DistrictService {
 
   async delete(id: number) {
     const district = await this.districtRepository.findOne(id)
-    if (!district) {
-      throw new NotFoundException(REGION_NOT_FOUND)
-    }
+    if (!district) throw new NotFoundException(REGION_NOT_FOUND)
+
     return this.districtRepository.softRemove(district)
   }
 }

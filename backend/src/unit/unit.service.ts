@@ -24,14 +24,7 @@ export class UnitService {
   ) {}
 
   async find(dto: BaseQueryDto) {
-    let { lang } = dto
-    const { page, limit } = dto
-
-    if (!lang) {
-      lang = await (
-        await this.languageRepository.findOne({ isDefault: true })
-      )?.title
-    }
+    const { lang, page, limit } = dto
 
     const units = await this.unitRepository
       .createQueryBuilder('unit')
@@ -62,36 +55,31 @@ export class UnitService {
       .leftJoinAndSelect('translations.language', 'language')
       .where('unit.id = :id', { id })
       .getOne()
-    if (!unit) {
-      throw new NotFoundException(CITY_NOT_FOUND)
-    }
+    if (!unit) throw new NotFoundException(CITY_NOT_FOUND)
+
     return unit
   }
 
   async create(dto: CreateUnitDto) {
-    const { code, translations, ...optionalData } = dto
+    const { translations, ...unitData } = dto
 
     const unitTranslations = await Promise.all(
-      translations.map(async ({ title, shortName, fullName }) => {
+      translations.map(async ({ title, ...otherData }) => {
         const language = await this.languageRepository.findOne({
           title,
         })
+        if (!language) throw new NotFoundException(LANGUAGE_NOT_FOUND)
 
-        if (!language) {
-          throw new NotFoundException(LANGUAGE_NOT_FOUND)
-        }
         return this.unitTranslationRepository.create({
-          shortName,
-          fullName,
           language,
+          ...otherData,
         })
       }),
     )
 
     const newUnit = this.unitRepository.create({
-      code,
       translations: unitTranslations,
-      ...optionalData,
+      ...unitData,
     })
 
     return this.unitRepository.save(newUnit)
@@ -104,19 +92,15 @@ export class UnitService {
       id,
       ...unitData,
     })
-    if (!unit) {
-      throw new NotFoundException(CITY_NOT_FOUND)
-    }
+    if (!unit) throw new NotFoundException(CITY_NOT_FOUND)
 
     const unitTranslations = await Promise.all(
       translations.map(async (data) => {
         const translation = await this.unitTranslationRepository.preload({
           ...data,
         })
+        if (!translation) throw new NotFoundException(CITY_LANGUAGE_NOT_FOUND)
 
-        if (!translation) {
-          throw new NotFoundException(CITY_LANGUAGE_NOT_FOUND)
-        }
         return translation
       }),
     )
@@ -127,9 +111,8 @@ export class UnitService {
 
   async delete(id: number) {
     const unit = await this.unitRepository.findOne(id)
-    if (!unit) {
-      throw new NotFoundException(CITY_NOT_FOUND)
-    }
+    if (!unit) throw new NotFoundException(CITY_NOT_FOUND)
+
     return this.unitRepository.softRemove(unit)
   }
 }
