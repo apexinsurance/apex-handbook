@@ -1,18 +1,15 @@
-import { ITranslatioForm, ITranslation } from '@/utils/types'
+import { IBaseHandbook, ITranslationForm, ITranslation } from '@/utils/types'
 
-export interface ICountry {
+export interface ICountry extends IBaseHandbook {
   id: number
   code: string
   ISOCode: string
-  translations: ITranslation[]
-  startDate?: Date
-  finishDate?: Date
 }
 
 export interface ICreateCountryForm {
   code: string
   ISOCode: string
-  translations: ITranslatioForm[]
+  translations: ITranslationForm[]
 }
 
 export interface IUpdateCountryForm extends ICreateCountryForm {

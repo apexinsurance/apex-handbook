@@ -1,4 +1,4 @@
-import { ITranslation, ITranslatioForm, IBaseHandbook } from '@/utils/types'
+import { ITranslation, ITranslationForm, IBaseHandbook } from '@/utils/types'
 
 export interface ICurrency extends IBaseHandbook {
   id: number
@@ -12,7 +12,7 @@ export interface ICreateCurrencyForm {
   code: string
   ISOCode: string
   countryId: number
-  translations: ITranslatioForm[]
+  translations: ITranslationForm[]
 }
 
 export interface IUpdateCurrencyForm extends ICreateCurrencyForm {

@@ -19,6 +19,12 @@ export class CurrencyTranslation {
   })
   fullName: string
 
+  @Column({
+    type: 'boolean',
+    default: false,
+  })
+  isDefault: boolean
+
   @ManyToOne(
     () => {
       return Currency

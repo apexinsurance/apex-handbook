@@ -27,14 +27,7 @@ export class CurrencyService {
   ) {}
 
   async find(dto: BaseQueryDto) {
-    let { lang } = dto
-    const { page, limit } = dto
-
-    if (!lang) {
-      lang = await (
-        await this.languageRepository.findOne({ isDefault: true })
-      )?.title
-    }
+    const { lang, page, limit } = dto
 
     const currency = await this.currencyRepository
       .createQueryBuilder('currency')
@@ -65,8 +58,6 @@ export class CurrencyService {
   }
 
   async findForSelect(): Promise<Region[]> {
-    const lang = (await this.languageRepository.findOne({ isDefault: true }))
-      ?.title
     const currencies = await this.currencyRepository
       .createQueryBuilder('currency')
       .leftJoin('currency.translations', 'translations')
@@ -74,7 +65,7 @@ export class CurrencyService {
       .select('currency.id as id')
       .addSelect('translations.shortName', 'shortName')
       .addSelect('translations.fullName', 'fullName')
-      .where('language.title = :lang', { lang })
+      .where('translations.isDefault = true')
       .getRawMany()
     return currencies
   }
@@ -97,23 +88,18 @@ export class CurrencyService {
     const { countryId, translations, ...otherData } = dto
     const country = await getRepository(Country).findOne(countryId)
 
-    if (!country) {
-      throw new NotFoundException(COUNTRY_NOT_FOUND)
-    }
+    if (!country) throw new NotFoundException(COUNTRY_NOT_FOUND)
 
     const currencyTranslations = await Promise.all(
-      translations.map(async ({ title, shortName, fullName }) => {
+      translations.map(async ({ title, ...otherData }) => {
         const language = await this.languageRepository.findOne({
           title,
         })
+        if (!language) throw new NotFoundException(LANGUAGE_NOT_FOUND)
 
-        if (!language) {
-          throw new NotFoundException(LANGUAGE_NOT_FOUND)
-        }
         return this.currencyTranslationRepository.create({
-          shortName,
-          fullName,
           language,
+          ...otherData,
         })
       }),
     )
@@ -134,24 +120,19 @@ export class CurrencyService {
       id,
       ...otherData,
     })
-    if (!currency) {
-      throw new NotFoundException(CURRENCY_NOT_FOUND)
-    }
+    if (!currency) throw new NotFoundException(CURRENCY_NOT_FOUND)
 
     const country = await getRepository(Country).findOne(countryId)
-    if (!country) {
-      throw new NotFoundException(COUNTRY_NOT_FOUND)
-    }
+    if (!country) throw new NotFoundException(COUNTRY_NOT_FOUND)
 
     const currencyTranslations = await Promise.all(
       translations.map(async (data) => {
         const translation = await this.currencyTranslationRepository.preload({
           ...data,
         })
-
-        if (!translation) {
+        if (!translation)
           throw new NotFoundException(CURRENCY_LANGUAGE_NOT_FOUND)
-        }
+
         return translation
       }),
     )
@@ -163,9 +144,8 @@ export class CurrencyService {
 
   async delete(id: number) {
     const currency = await this.currencyRepository.findOne(id)
-    if (!currency) {
-      throw new NotFoundException(CURRENCY_NOT_FOUND)
-    }
+    if (!currency) throw new NotFoundException(CURRENCY_NOT_FOUND)
+
     return this.currencyRepository.softRemove(currency)
   }
 }

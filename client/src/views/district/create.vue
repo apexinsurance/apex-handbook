@@ -34,6 +34,13 @@
               />
             </el-select>
           </el-form-item>
+          <el-form-item label="Язык по умолчанию" prop="isDefault">
+            <el-radio-group v-model="districtForm.isDefault">
+              <el-radio label="uz">O'zbek</el-radio>
+              <el-radio label="ru">Русский</el-radio>
+              <el-radio label="en">English</el-radio>
+            </el-radio-group>
+          </el-form-item>
           <el-form-item>
             <el-tabs v-model="activeTab">
               <el-tab-pane label="O'zbek" name="uz">
@@ -117,7 +124,7 @@
 import { defineComponent } from 'vue'
 import PageHeader from '@/components/PageHeader/index.vue'
 import { generateFormRules } from '@/utils/methods'
-import { ITranslatioForm } from '@/utils/types'
+import { ITranslationForm } from '@/utils/types'
 import { RegionModule } from '@/store/modules/region'
 import { ElMessage } from 'element-plus'
 import { CountryModule } from '@/store/modules/country'
@@ -133,6 +140,7 @@ export default defineComponent({
       districtForm: {
         code: '',
         regionId: null as any,
+        isDefault: 'uz',
         uz: {
           id: -1,
           title: 'uz',
@@ -151,7 +159,7 @@ export default defineComponent({
           shortName: '',
           fullName: '',
         },
-      },
+      } as Record<string, any>,
       rules: {
         ...generateFormRules([
           'code',
@@ -177,8 +185,9 @@ export default defineComponent({
     submitForm(formName: string) {
       ;(this.$refs[formName] as any).validate(async (valid: boolean) => {
         if (valid) {
-          const { code, regionId, ru, uz, en } = this.districtForm
-          const translations = [ru, uz, en] as ITranslatioForm[]
+          const { code, regionId, isDefault, ru, uz, en } = this.districtForm
+          this.districtForm[isDefault].isDefault = true
+          const translations = [ru, uz, en] as ITranslationForm[]
           const formData: ICreateDistrictForm = {
             code,
             translations,

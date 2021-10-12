@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   ManyToOne,
+  DeleteDateColumn,
 } from 'typeorm'
 import { Country } from './Country'
 import { CurrencyRate } from './CurrencyRate'
@@ -28,13 +29,18 @@ export class Currency {
 
   @Column({
     type: 'timestamp with time zone',
+    default: new Date(),
   })
   startDate: Date
 
   @Column({
     type: 'timestamp with time zone',
+    default: null,
   })
   finishDate: Date
+
+  @DeleteDateColumn({ type: 'timestamp with time zone', default: null })
+  deletedDate: Date
 
   @OneToMany(
     () => {
@@ -44,7 +50,7 @@ export class Currency {
       return model.currency
     },
     {
-      eager: true,
+      cascade: true,
     },
   )
   translations: CurrencyTranslation[]

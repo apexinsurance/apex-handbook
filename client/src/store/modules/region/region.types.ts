@@ -1,4 +1,4 @@
-import { ITranslation, ITranslatioForm } from '@/utils/types'
+import { ITranslation, ITranslationForm } from '@/utils/types'
 
 export interface IRegion {
   id: number
@@ -13,7 +13,7 @@ export interface IRegion {
 export interface ICreateRegionForm {
   code: string
   countryId: number
-  translations: ITranslatioForm[]
+  translations: ITranslationForm[]
 }
 
 export interface IUpdateRegionForm extends ICreateRegionForm {

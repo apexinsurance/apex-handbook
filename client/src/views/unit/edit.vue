@@ -99,10 +99,8 @@
 import { defineComponent } from 'vue'
 import PageHeader from '@/components/PageHeader/index.vue'
 import { generateFormRules } from '@/utils/methods'
-import { ITranslatioForm } from '@/utils/types'
+import { ITranslationForm } from '@/utils/types'
 import { ElMessage } from 'element-plus'
-import { CountryModule } from '@/store/modules/country'
-import { CurrencyModule } from '@/store/modules/currency'
 import { IUpdateUnitForm } from '@/store/modules/unit/unit.types'
 import { UnitModule } from '@/store/modules/unit'
 export default defineComponent({
@@ -151,8 +149,7 @@ export default defineComponent({
     try {
       await UnitModule.findUnitById(+this.$route.params.id)
       if (UnitModule.currentUnit) {
-        const { code, translations, id, finishDate } =
-          UnitModule.currentUnit
+        const { code, translations, id, finishDate } = UnitModule.currentUnit
         this.unitForm.code = code
         this.unitForm.id = id
         this.unitForm.outdated = !!finishDate
@@ -191,7 +188,7 @@ export default defineComponent({
       ;(this.$refs[formName] as any).validate(async (valid: boolean) => {
         if (valid) {
           const { id, code, outdated, ru, uz, en } = this.unitForm
-          const translations = [ru, uz, en] as ITranslatioForm[]
+          const translations = [ru, uz, en] as ITranslationForm[]
           const formData: IUpdateUnitForm = {
             id,
             code,

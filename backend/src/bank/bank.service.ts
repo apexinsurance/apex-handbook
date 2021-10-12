@@ -25,14 +25,7 @@ export class BankService {
   ) {}
 
   async find(dto: BaseQueryDto) {
-    let { lang } = dto
-    const { page, limit } = dto
-
-    if (!lang) {
-      lang = await (
-        await this.languageRepository.findOne({ isDefault: true })
-      )?.title
-    }
+    const { lang, page, limit } = dto
 
     const countries = await this.bankRepository
       .createQueryBuilder('bank')
@@ -71,14 +64,13 @@ export class BankService {
       .leftJoinAndSelect('translations.language', 'language')
       .where('bank.id = :id', { id })
       .getOne()
-    if (!bank) {
-      throw new NotFoundException(BANK_NOT_FOUND)
-    }
+    if (!bank) throw new NotFoundException(BANK_NOT_FOUND)
+
     return bank
   }
 
   async create(dto: CreateBankDto) {
-    const { countryId, translations, ...otherData } = dto
+    const { countryId, translations, ...bankData } = dto
     const country = await getRepository(Country).findOne(countryId)
 
     if (!country) {
@@ -86,17 +78,15 @@ export class BankService {
     }
 
     const bankTranslations = await Promise.all(
-      translations.map(async ({ title, shortName, fullName }) => {
+      translations.map(async ({ title, ...otherData }) => {
         const language = await this.languageRepository.findOne({
           title,
         })
 
-        if (!language) {
-          throw new NotFoundException(LANGUAGE_NOT_FOUND)
-        }
+        if (!language) throw new NotFoundException(LANGUAGE_NOT_FOUND)
+
         return this.bankTranslationRepository.create({
-          shortName,
-          fullName,
+          ...otherData,
           language,
         })
       }),
@@ -105,7 +95,7 @@ export class BankService {
     const newBank = this.bankRepository.create({
       translations: bankTranslations,
       country,
-      ...otherData,
+      ...bankData,
     })
 
     return this.bankRepository.save(newBank)
@@ -118,24 +108,18 @@ export class BankService {
       id,
       ...bankData,
     })
-    if (!bank) {
-      throw new NotFoundException(BANK_NOT_FOUND)
-    }
+    if (!bank) throw new NotFoundException(BANK_NOT_FOUND)
 
     const country = await getRepository(Country).findOne(countryId)
-    if (!country) {
-      throw new NotFoundException(COUNTRY_NOT_FOUND)
-    }
+    if (!country) throw new NotFoundException(COUNTRY_NOT_FOUND)
 
     const bankTranslations = await Promise.all(
       translations.map(async (data) => {
         const translation = await this.bankTranslationRepository.preload({
           ...data,
         })
+        if (!translation) throw new NotFoundException(BANK_LANGUAGE_NOT_FOUND)
 
-        if (!translation) {
-          throw new NotFoundException(BANK_LANGUAGE_NOT_FOUND)
-        }
         return translation
       }),
     )
@@ -147,9 +131,8 @@ export class BankService {
 
   async delete(id: number) {
     const bank = await this.bankRepository.findOne(id)
-    if (!bank) {
-      throw new NotFoundException(BANK_NOT_FOUND)
-    }
+    if (!bank) throw new NotFoundException(BANK_NOT_FOUND)
+
     return this.bankRepository.softRemove(bank)
   }
 }
