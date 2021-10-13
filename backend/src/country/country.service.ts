@@ -23,11 +23,7 @@ export class CountryService {
   ) {}
 
   async find(dto: BaseQueryDto) {
-    let { lang } = dto
-    const { page, limit } = dto
-    if (!lang) {
-      lang = (await this.languageRepository.findOne({ isDefault: true }))?.title
-    }
+    const { lang, page, limit } = dto
     const countries = await this.countryRepository
       .createQueryBuilder('country')
       .leftJoin('country.translations', 'translations')
@@ -51,8 +47,6 @@ export class CountryService {
   }
 
   async findForSelect(): Promise<Country[]> {
-    const lang = (await this.languageRepository.findOne({ isDefault: true }))
-      ?.title
     const countries = await this.countryRepository
       .createQueryBuilder('country')
       .leftJoin('country.translations', 'translations')
@@ -60,7 +54,7 @@ export class CountryService {
       .select('country.id as id')
       .addSelect('translations.shortName', 'shortName')
       .addSelect('translations.fullName', 'fullName')
-      .where('language.title = :lang', { lang })
+      .where('translations.isDefault = true')
       .getRawMany()
     return countries
   }
@@ -73,36 +67,32 @@ export class CountryService {
       .where('country.id = :id', { id })
       .getOne()
     if (!country) {
-      throw new NotFoundException('Country not found')
+      throw new NotFoundException(COUNTRY_NOT_FOUND)
     }
     return country
   }
 
   async create(dto: CreateCountryDto) {
-    const { code, ISOCode, translations, ...optionalData } = dto
+    const { translations, ...otherData } = dto
 
     const countryTranslations = await Promise.all(
-      translations.map(async ({ title, shortName, fullName }) => {
+      translations.map(async ({ title, ...otherData }) => {
         const language = await this.languageRepository.findOne({
           title,
         })
 
-        if (!language) {
-          throw new NotFoundException(LANGUAGE_NOT_FOUND)
-        }
+        if (!language) throw new NotFoundException(LANGUAGE_NOT_FOUND)
+
         return this.countryTranslationRepository.create({
-          shortName,
-          fullName,
           language,
+          ...otherData,
         })
       }),
     )
 
     const newCountry = this.countryRepository.create({
-      code,
-      ISOCode,
       translations: countryTranslations,
-      ...optionalData,
+      ...otherData,
     })
 
     return this.countryRepository.save(newCountry)
@@ -115,21 +105,21 @@ export class CountryService {
       id,
       ...countryData,
     })
-    if (!country) {
-      throw new NotFoundException(COUNTRY_NOT_FOUND)
-    }
+    if (!country) throw new NotFoundException(COUNTRY_NOT_FOUND)
+
     const countryTranslations = await Promise.all(
       translations.map(async (data) => {
         const translation = await this.countryTranslationRepository.preload({
           ...data,
         })
 
-        if (!translation) {
+        if (!translation)
           throw new NotFoundException(COUNTRY_LANGUAGE_NOT_FOUND)
-        }
+
         return translation
       }),
     )
+
     country.translations = countryTranslations
     return this.countryRepository.save(country)
   }
@@ -137,8 +127,9 @@ export class CountryService {
   async delete(id: number) {
     const country = await this.countryRepository.findOne(id)
     if (!country) {
-      throw new NotFoundException(`Country is not found`)
+      throw new NotFoundException(COUNTRY_NOT_FOUND)
     }
+
     return this.countryRepository.softRemove(country)
   }
 }

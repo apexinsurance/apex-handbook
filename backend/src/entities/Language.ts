@@ -25,12 +25,6 @@ export class Language {
   })
   title: string
 
-  @Column({
-    type: 'boolean',
-    default: false,
-  })
-  isDefault: boolean
-
   @OneToMany(
     () => {
       return BankTranslation

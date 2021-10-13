@@ -10,13 +10,13 @@ export interface ITranslation {
   fullName: string
   shortName: string
   id?: number
+  isDefault?: boolean
   language?: {
     title: LanguageType
-    isDefault: boolean
   }
 }
 
-export interface ITranslatioForm extends ITranslation {
+export interface ITranslationForm extends ITranslation {
   title: LanguageType
 }
 

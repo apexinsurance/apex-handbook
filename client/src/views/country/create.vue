@@ -24,6 +24,13 @@
               type="text"
             />
           </el-form-item>
+          <el-form-item label="Язык по умолчанию" prop="isDefault">
+            <el-radio-group v-model="countryForm.isDefault">
+              <el-radio label="uz">O'zbek</el-radio>
+              <el-radio label="ru">Русский</el-radio>
+              <el-radio label="en">English</el-radio>
+            </el-radio-group>
+          </el-form-item>
           <el-form-item>
             <el-tabs v-model="activeTab">
               <el-tab-pane label="O'zbek" name="uz">
@@ -110,9 +117,9 @@ import { generateFormRules } from '@/utils/methods'
 import { ICreateCountryForm } from '@/store/modules/country/country.types'
 import { CountryModule } from '@/store/modules/country'
 import { ElMessage } from 'element-plus'
-import { ITranslatioForm } from '@/utils/types'
+import { ITranslationForm } from '@/utils/types'
 export default defineComponent({
-  name: 'EditCountry',
+  name: 'CreateCountry',
   components: { PageHeader },
   data() {
     return {
@@ -120,6 +127,7 @@ export default defineComponent({
       countryForm: {
         code: '',
         ISOCode: '',
+        isDefault: 'uz',
         uz: {
           title: 'uz',
           shortName: '',
@@ -135,7 +143,7 @@ export default defineComponent({
           shortName: '',
           fullName: '',
         },
-      },
+      } as Record<string, any>,
       rules: {
         ...generateFormRules([
           'code',
@@ -154,8 +162,9 @@ export default defineComponent({
     submitForm(formName: string) {
       ;(this.$refs[formName] as any).validate(async (valid: boolean) => {
         if (valid) {
-          const { code, ISOCode, ru, uz, en } = this.countryForm
-          const translations = [ru, uz, en] as ITranslatioForm[]
+          const { code, ISOCode, isDefault, ru, uz, en } = this.countryForm
+          this.countryForm[isDefault].isDefault = true
+          const translations = [ru, uz, en] as ITranslationForm[]
 
           const formData: ICreateCountryForm = {
             code,
