@@ -51,7 +51,7 @@
               <el-tab-pane label="O'zbek" name="uz">
                 <el-form-item label="Name" prop="uz.fullName">
                   <el-input
-                    v-model.trim="currencyForm.uz.fullName"
+                    v-model="currencyForm.uz.fullName"
                     size="small"
                     type="text"
                   />
@@ -62,7 +62,7 @@
                   label-position="top"
                 >
                   <el-input
-                    v-model.trim="currencyForm.uz.shortName"
+                    v-model="currencyForm.uz.shortName"
                     size="small"
                     type="text"
                   />
@@ -71,7 +71,7 @@
               <el-tab-pane label="Русский" name="ru"
                 ><el-form-item label="Name" prop="ru.fullName">
                   <el-input
-                    v-model.trim="currencyForm.ru.fullName"
+                    v-model="currencyForm.ru.fullName"
                     size="small"
                     type="text"
                   />
@@ -82,7 +82,7 @@
                   label-position="top"
                 >
                   <el-input
-                    v-model.trim="currencyForm.ru.shortName"
+                    v-model="currencyForm.ru.shortName"
                     size="small"
                     type="text"
                   /> </el-form-item
@@ -90,7 +90,7 @@
               <el-tab-pane label="English" name="en"
                 ><el-form-item label="Name" prop="en.fullName">
                   <el-input
-                    v-model.trim="currencyForm.en.fullName"
+                    v-model="currencyForm.en.fullName"
                     size="small"
                     type="text"
                   />
@@ -101,7 +101,7 @@
                   label-position="top"
                 >
                   <el-input
-                    v-model.trim="currencyForm.en.shortName"
+                    v-model="currencyForm.en.shortName"
                     size="small"
                     type="text"
                   /> </el-form-item

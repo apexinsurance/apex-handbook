@@ -47,7 +47,7 @@
               <el-tab-pane label="O'zbek" name="uz">
                 <el-form-item label="Name" prop="uz.fullName">
                   <el-input
-                    v-model.trim="bankForm.uz.fullName"
+                    v-model="bankForm.uz.fullName"
                     size="small"
                     type="text"
                   />
@@ -58,7 +58,7 @@
                   label-position="top"
                 >
                   <el-input
-                    v-model.trim="bankForm.uz.shortName"
+                    v-model="bankForm.uz.shortName"
                     size="small"
                     type="text"
                   />
@@ -67,7 +67,7 @@
               <el-tab-pane label="Русский" name="ru"
                 ><el-form-item label="Name" prop="ru.fullName">
                   <el-input
-                    v-model.trim="bankForm.ru.fullName"
+                    v-model="bankForm.ru.fullName"
                     size="small"
                     type="text"
                   />
@@ -78,7 +78,7 @@
                   label-position="top"
                 >
                   <el-input
-                    v-model.trim="bankForm.ru.shortName"
+                    v-model="bankForm.ru.shortName"
                     size="small"
                     type="text"
                   /> </el-form-item

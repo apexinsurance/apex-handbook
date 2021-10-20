@@ -33,7 +33,7 @@ import { IHandbookColumn } from '@/utils/types'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { RegionModule } from '@/store/modules/region'
 export default defineComponent({
-  name: 'Country',
+  name: 'Region',
   components: { PageHeader, TableHeader, HandbookTable },
   data() {
     return {

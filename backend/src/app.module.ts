@@ -12,6 +12,7 @@ import { DistrictModule } from './district/district.module'
 import { LanguageModule } from './language/language.module'
 import { RegionModule } from './region/region.module'
 import { UnitModule } from './unit/unit.module'
+import { SeederModule } from './seeder/seeder.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { UnitModule } from './unit/unit.module'
     CurrencyRateModule,
     UnitModule,
     BcvModule,
+    SeederModule,
   ],
 })
 export class AppModule {}

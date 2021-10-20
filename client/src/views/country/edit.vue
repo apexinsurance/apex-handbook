@@ -39,7 +39,7 @@
               <el-tab-pane label="O'zbek" name="uz">
                 <el-form-item label="Name" prop="uz.fullName">
                   <el-input
-                    v-model.trim="countryForm.uz.fullName"
+                    v-model="countryForm.uz.fullName"
                     size="small"
                     type="text"
                   />
@@ -50,7 +50,7 @@
                   label-position="top"
                 >
                   <el-input
-                    v-model.trim="countryForm.uz.shortName"
+                    v-model="countryForm.uz.shortName"
                     size="small"
                     type="text"
                   />
@@ -59,7 +59,7 @@
               <el-tab-pane label="Русский" name="ru"
                 ><el-form-item label="Name" prop="ru.fullName">
                   <el-input
-                    v-model.trim="countryForm.ru.fullName"
+                    v-model="countryForm.ru.fullName"
                     size="small"
                     type="text"
                   />
@@ -70,7 +70,7 @@
                   label-position="top"
                 >
                   <el-input
-                    v-model.trim="countryForm.ru.shortName"
+                    v-model="countryForm.ru.shortName"
                     size="small"
                     type="text"
                   /> </el-form-item
@@ -78,7 +78,7 @@
               <el-tab-pane label="English" name="en"
                 ><el-form-item label="Name" prop="en.fullName">
                   <el-input
-                    v-model.trim="countryForm.en.fullName"
+                    v-model="countryForm.en.fullName"
                     size="small"
                     type="text"
                   />
@@ -89,7 +89,7 @@
                   label-position="top"
                 >
                   <el-input
-                    v-model.trim="countryForm.en.shortName"
+                    v-model="countryForm.en.shortName"
                     size="small"
                     type="text"
                   /> </el-form-item

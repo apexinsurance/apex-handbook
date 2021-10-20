@@ -28,6 +28,18 @@ export class CurrencyRate {
   @Column('int')
   count: number
 
+  @Column({
+    type: 'timestamp with time zone',
+    default: new Date(),
+  })
+  startDate: Date
+
+  @Column({
+    type: 'timestamp with time zone',
+    default: null,
+  })
+  finishDate: Date
+
   @DeleteDateColumn({ type: 'timestamp with time zone', default: null })
   deletedDate: Date
 

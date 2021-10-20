@@ -51,7 +51,7 @@ import { ElMessage } from 'element-plus'
 import { BcvModule } from '@/store/modules/bcv'
 import { IUpdateBCVForm } from '@/store/modules/bcv/bcv.types'
 export default defineComponent({
-  name: 'EditCurrencyRate',
+  name: 'EditBCV',
   components: { PageHeader },
   data() {
     return {

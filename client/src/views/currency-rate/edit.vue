@@ -103,13 +103,14 @@ export default defineComponent({
       }
       await CurrencyRateModule.findCurrencyRateById(+this.$route.params.id)
       if (CurrencyRateModule.currentCurrencyRate) {
-        const { id, date, count, rate, currencyId } =
+        const { id, date, count, rate, currencyId, finishDate } =
           CurrencyRateModule.currentCurrencyRate
         this.currencyRateForm.rate = rate
         this.currencyRateForm.id = id
         this.currencyRateForm.count = count
         this.currencyRateForm.date = date
         this.currencyRateForm.currencyId = currencyId
+        this.currencyRateForm.outdated = !!finishDate
       }
     } catch (error) {}
   },
@@ -128,6 +129,7 @@ export default defineComponent({
             currencyId,
             finishDate: outdated ? new Date() : null,
           }
+          console.log('formData', formData)
 
           await CurrencyRateModule.updateCurrencyRate(formData)
           ElMessage({

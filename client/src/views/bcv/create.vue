@@ -51,7 +51,7 @@ import { ElMessage } from 'element-plus'
 import { BcvModule } from '@/store/modules/bcv'
 import { ICreateBCVForm } from '@/store/modules/bcv/bcv.types'
 export default defineComponent({
-  name: 'CreateCurrencyRate',
+  name: 'CreateBCV',
   components: { PageHeader },
   data() {
     return {

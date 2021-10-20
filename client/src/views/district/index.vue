@@ -33,7 +33,7 @@ import { IHandbookColumn } from '@/utils/types'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { DistrictModule } from '@/store/modules/district'
 export default defineComponent({
-  name: 'City',
+  name: 'District',
   components: { PageHeader, TableHeader, HandbookTable },
   data() {
     return {

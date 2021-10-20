@@ -16,12 +16,19 @@
           <el-form-item label="Устаревший">
             <el-switch v-model="unitForm.outdated" />
           </el-form-item>
+          <el-form-item label="Язык по умолчанию" prop="isDefault">
+            <el-radio-group v-model="unitForm.isDefault">
+              <el-radio label="uz">O'zbek</el-radio>
+              <el-radio label="ru">Русский</el-radio>
+              <el-radio label="en">English</el-radio>
+            </el-radio-group>
+          </el-form-item>
           <el-form-item>
             <el-tabs v-model="activeTab">
               <el-tab-pane label="O'zbek" name="uz">
                 <el-form-item label="Name" prop="uz.fullName">
                   <el-input
-                    v-model.trim="unitForm.uz.fullName"
+                    v-model="unitForm.uz.fullName"
                     size="small"
                     type="text"
                   />
@@ -32,7 +39,7 @@
                   label-position="top"
                 >
                   <el-input
-                    v-model.trim="unitForm.uz.shortName"
+                    v-model="unitForm.uz.shortName"
                     size="small"
                     type="text"
                   />
@@ -41,7 +48,7 @@
               <el-tab-pane label="Русский" name="ru"
                 ><el-form-item label="Name" prop="ru.fullName">
                   <el-input
-                    v-model.trim="unitForm.ru.fullName"
+                    v-model="unitForm.ru.fullName"
                     size="small"
                     type="text"
                   />
@@ -52,7 +59,7 @@
                   label-position="top"
                 >
                   <el-input
-                    v-model.trim="unitForm.ru.shortName"
+                    v-model="unitForm.ru.shortName"
                     size="small"
                     type="text"
                   /> </el-form-item
@@ -60,7 +67,7 @@
               <el-tab-pane label="English" name="en"
                 ><el-form-item label="Name" prop="en.fullName">
                   <el-input
-                    v-model.trim="unitForm.en.fullName"
+                    v-model="unitForm.en.fullName"
                     size="small"
                     type="text"
                   />
@@ -71,7 +78,7 @@
                   label-position="top"
                 >
                   <el-input
-                    v-model.trim="unitForm.en.shortName"
+                    v-model="unitForm.en.shortName"
                     size="small"
                     type="text"
                   /> </el-form-item
@@ -113,6 +120,7 @@ export default defineComponent({
         id: -1,
         outdated: false,
         code: '',
+        isDefault: 'uz',
         uz: {
           id: -1,
           title: 'uz',
@@ -131,7 +139,7 @@ export default defineComponent({
           shortName: '',
           fullName: '',
         },
-      },
+      } as Record<string, any>,
       rules: {
         ...generateFormRules([
           'code',
@@ -163,6 +171,7 @@ export default defineComponent({
             shortName: uz.shortName,
             fullName: uz.fullName,
           }
+          if (uz.isDefault) this.unitForm.isDefault = 'uz'
         }
         if (ru) {
           this.unitForm.ru = {
@@ -171,6 +180,7 @@ export default defineComponent({
             shortName: ru.shortName,
             fullName: ru.fullName,
           }
+          if (ru.isDefault) this.unitForm.isDefault = 'ru'
         }
         if (en) {
           this.unitForm.en = {
@@ -179,6 +189,7 @@ export default defineComponent({
             shortName: en.shortName,
             fullName: en.fullName,
           }
+          if (en.isDefault) this.unitForm.isDefault = 'en'
         }
       }
     } catch (error) {}
@@ -187,7 +198,8 @@ export default defineComponent({
     submitForm(formName: string) {
       ;(this.$refs[formName] as any).validate(async (valid: boolean) => {
         if (valid) {
-          const { id, code, outdated, ru, uz, en } = this.unitForm
+          const { id, code, outdated, isDefault, ru, uz, en } = this.unitForm
+          this.unitForm[isDefault].isDefault = true
           const translations = [ru, uz, en] as ITranslationForm[]
           const formData: IUpdateUnitForm = {
             id,

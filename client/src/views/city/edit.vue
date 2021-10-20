@@ -43,7 +43,7 @@
               <el-tab-pane label="O'zbek" name="uz">
                 <el-form-item label="Name" prop="uz.fullName">
                   <el-input
-                    v-model.trim="cityForm.uz.fullName"
+                    v-model="cityForm.uz.fullName"
                     size="small"
                     type="text"
                   />
@@ -54,7 +54,7 @@
                   label-position="top"
                 >
                   <el-input
-                    v-model.trim="cityForm.uz.shortName"
+                    v-model="cityForm.uz.shortName"
                     size="small"
                     type="text"
                   />
@@ -63,7 +63,7 @@
               <el-tab-pane label="Русский" name="ru"
                 ><el-form-item label="Name" prop="ru.fullName">
                   <el-input
-                    v-model.trim="cityForm.ru.fullName"
+                    v-model="cityForm.ru.fullName"
                     size="small"
                     type="text"
                   />
@@ -74,7 +74,7 @@
                   label-position="top"
                 >
                   <el-input
-                    v-model.trim="cityForm.ru.shortName"
+                    v-model="cityForm.ru.shortName"
                     size="small"
                     type="text"
                   /> </el-form-item
@@ -82,7 +82,7 @@
               <el-tab-pane label="English" name="en"
                 ><el-form-item label="Name" prop="en.fullName">
                   <el-input
-                    v-model.trim="cityForm.en.fullName"
+                    v-model="cityForm.en.fullName"
                     size="small"
                     type="text"
                   />
@@ -93,7 +93,7 @@
                   label-position="top"
                 >
                   <el-input
-                    v-model.trim="cityForm.en.shortName"
+                    v-model="cityForm.en.shortName"
                     size="small"
                     type="text"
                   /> </el-form-item
@@ -127,7 +127,7 @@ import { ElMessage } from 'element-plus'
 import { IUpdateCityForm } from '@/store/modules/city/city.types'
 import { CityModule } from '@/store/modules/city'
 export default defineComponent({
-  name: 'EditDistrict',
+  name: 'EditCity',
   components: { PageHeader },
   data() {
     return {

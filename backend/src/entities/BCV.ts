@@ -1,4 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm'
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  DeleteDateColumn,
+} from 'typeorm'
 
 @Entity()
 export class BCV {
@@ -17,4 +22,7 @@ export class BCV {
     type: 'timestamp with time zone',
   })
   date: Date
+
+  @DeleteDateColumn({ type: 'timestamp with time zone', default: null })
+  deletedDate: Date
 }

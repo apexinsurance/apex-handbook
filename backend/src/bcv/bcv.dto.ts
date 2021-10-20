@@ -1,11 +1,4 @@
-import {
-  IsArray,
-  IsDate,
-  IsDecimal,
-  IsNumber,
-  IsOptional,
-  IsPositive,
-} from 'class-validator'
+import { IsDate, IsNumber, IsOptional, IsPositive } from 'class-validator'
 import { BaseDto } from 'src/common/dto/base.dto'
 
 export class CreateBcvDto {
@@ -25,6 +18,6 @@ export class UpdateBcvDto extends BaseDto {
 
   @IsOptional()
   @IsNumber()
-  @IsDecimal()
-  rate: number
+  @IsPositive()
+  value: number
 }

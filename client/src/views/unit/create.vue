@@ -13,12 +13,19 @@
           <el-form-item label="Code" prop="code">
             <el-input v-model.trim="unitForm.code" size="small" type="text" />
           </el-form-item>
+          <el-form-item label="Язык по умолчанию" prop="isDefault">
+            <el-radio-group v-model="unitForm.isDefault">
+              <el-radio label="uz">O'zbek</el-radio>
+              <el-radio label="ru">Русский</el-radio>
+              <el-radio label="en">English</el-radio>
+            </el-radio-group>
+          </el-form-item>
           <el-form-item>
             <el-tabs v-model="activeTab">
               <el-tab-pane label="O'zbek" name="uz">
                 <el-form-item label="Name" prop="uz.fullName">
                   <el-input
-                    v-model.trim="unitForm.uz.fullName"
+                    v-model="unitForm.uz.fullName"
                     size="small"
                     type="text"
                   />
@@ -29,7 +36,7 @@
                   label-position="top"
                 >
                   <el-input
-                    v-model.trim="unitForm.uz.shortName"
+                    v-model="unitForm.uz.shortName"
                     size="small"
                     type="text"
                   />
@@ -38,7 +45,7 @@
               <el-tab-pane label="Русский" name="ru"
                 ><el-form-item label="Name" prop="ru.fullName">
                   <el-input
-                    v-model.trim="unitForm.ru.fullName"
+                    v-model="unitForm.ru.fullName"
                     size="small"
                     type="text"
                   />
@@ -49,7 +56,7 @@
                   label-position="top"
                 >
                   <el-input
-                    v-model.trim="unitForm.ru.shortName"
+                    v-model="unitForm.ru.shortName"
                     size="small"
                     type="text"
                   /> </el-form-item
@@ -57,7 +64,7 @@
               <el-tab-pane label="English" name="en"
                 ><el-form-item label="Name" prop="en.fullName">
                   <el-input
-                    v-model.trim="unitForm.en.fullName"
+                    v-model="unitForm.en.fullName"
                     size="small"
                     type="text"
                   />
@@ -68,7 +75,7 @@
                   label-position="top"
                 >
                   <el-input
-                    v-model.trim="unitForm.en.shortName"
+                    v-model="unitForm.en.shortName"
                     size="small"
                     type="text"
                   /> </el-form-item
@@ -108,6 +115,7 @@ export default defineComponent({
       activeTab: 'uz',
       unitForm: {
         code: '',
+        isDefault: 'uz',
         uz: {
           id: -1,
           title: 'uz',
@@ -126,7 +134,7 @@ export default defineComponent({
           shortName: '',
           fullName: '',
         },
-      },
+      } as Record<string, any>,
       rules: {
         ...generateFormRules([
           'code',
@@ -144,13 +152,14 @@ export default defineComponent({
     submitForm(formName: string) {
       ;(this.$refs[formName] as any).validate(async (valid: boolean) => {
         if (valid) {
-          const { code, ru, uz, en } = this.unitForm
+          const { code, isDefault, ru, uz, en } = this.unitForm
+          this.unitForm[isDefault].isDefault = true
           const translations = [ru, uz, en] as ITranslationForm[]
+
           const formData: ICreateUnitForm = {
             code,
             translations,
           }
-
           await UnitModule.createUnit(formData)
           this.resetForm(formName)
           ElMessage({

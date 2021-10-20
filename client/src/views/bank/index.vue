@@ -33,7 +33,7 @@ import { IHandbookColumn } from '@/utils/types'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { BankModule } from '@/store/modules/bank'
 export default defineComponent({
-  name: 'City',
+  name: 'Bank',
   components: { PageHeader, TableHeader, HandbookTable },
   data() {
     return {
